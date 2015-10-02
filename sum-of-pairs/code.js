@@ -1,19 +1,53 @@
 var sum_pairs = function(ints, s){
 
-	var set_length = ints.length;
+	function memoize(fn) {
+		return function () {
+			var args = Array.prototype.slice.call(arguments),
+				hash = "",
+				i = args.length;
+			currentArg = null;
+			while (i--) {
+				currentArg = args[i];
+				hash += (currentArg === Object(currentArg)) ? JSON.stringify(currentArg) : currentArg;
+				fn.memoize || (fn.memoize = {});
+			}
+			console.log(fn.memoize);
+			return (hash in fn.memoize) ? fn.memoize[hash] : fn.memoize[hash] = fn.apply(this, args);
+		};
+	}
 
-	if (s === 0) {
-		return [0,0];
+	function get_sum(i1, i2) {
+		return i1 + i2;
 	}
-	else if (set_length > 1) {
-		for (var i = 0; i < set_length; i++) {
-			if (ints[i] + ints[i+1] === s)
-				return [ints[i], ints[i+1]];
-			else if (ints[0] + ints[i+1] === s)
-				return [ints[0], ints[i+1]];
+
+	function get_match() {
+
+		var set_length = ints.length;
+
+		if (s === 0) {
+			return [0,0];
 		}
-		return sum_pairs(ints.slice(1, set_length), s);
+		else if (set_length > 1) {
+			for (var i = 0; i < set_length; i++) {
+
+				var sum = memoize(get_sum);
+				var current = ints[i];
+				var first = ints[0];
+				var next = ints[i+1];
+
+				// Could this still be simplified somehow?
+				if ( sum(current, next) === s )
+					return [current, next];
+				else if ( sum(first, next) === s )
+					return [first, next];
+
+			}
+			return sum_pairs(ints.slice(1, set_length), s);
+		}
 	}
+
+	return get_match();
+
 }
 
 l1= [1, 4, 8, 7, 3, 15];
