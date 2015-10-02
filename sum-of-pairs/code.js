@@ -11,7 +11,6 @@ var sum_pairs = function(ints, s){
 				hash += (currentArg === Object(currentArg)) ? JSON.stringify(currentArg) : currentArg;
 				fn.memoize || (fn.memoize = {});
 			}
-			console.log(fn.memoize);
 			return (hash in fn.memoize) ? fn.memoize[hash] : fn.memoize[hash] = fn.apply(this, args);
 		};
 	}
@@ -28,14 +27,11 @@ var sum_pairs = function(ints, s){
 			return [0,0];
 		}
 		else if (set_length > 1) {
+			var sum = memoize(get_sum);
 			for (var i = 0; i < set_length; i++) {
-
-				var sum = memoize(get_sum);
-				var current = ints[i];
-				var first = ints[0];
-				var next = ints[i+1];
-
-				// Could this still be simplified somehow?
+				var current = ints[i],
+					first = ints[0],
+					next = ints[i+1];
 				if ( sum(current, next) === s )
 					return [current, next];
 				else if ( sum(first, next) === s )
@@ -50,7 +46,7 @@ var sum_pairs = function(ints, s){
 
 }
 
-l1= [1, 4, 8, 7, 3, 15];
+l1= [1, 4, 8, 7, 3, 15, 1, 4, 8, 7, 3, 15];
 l2= [1, -2, 3, 0, -6, 1];
 l3= [20, -13, 40];
 l4= [1, 2, 3, 4, 1, 0];
@@ -59,7 +55,7 @@ l6= [4, -2, 3, 3, 4];
 l7= [0, 2, 0];
 l8= [5, 9, 13, -3];
 
-console.log(sum_pairs(l1, 8));
+console.log(sum_pairs(l1, 100));
 console.log(sum_pairs(l2, -6));
 console.log(sum_pairs(l3, -7));
 console.log(sum_pairs(l4, 2));
